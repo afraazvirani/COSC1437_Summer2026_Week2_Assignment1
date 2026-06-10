@@ -9,6 +9,187 @@
 
 
 // ===== Section 1 — Pseudocode Design Block =====
+/*
+Main Algorithm:
+ 
+1.  Declare real MIN_NIGHTLY_RATE = 0.0
+2.  Declare integer MIN_ROOMS = 0
+3.  Declare integer MIN_NIGHTS = 0
+4.  Declare real MIN_SALES_TAX_RATE = 0.0
+5.  Declare real NO_DISCOUNT = 0.0
+6.  Declare real DISCOUNT_TIER_ONE = 10.0
+7.  Declare real DISCOUNT_TIER_TWO = 20.0
+8.  Declare real DISCOUNT_TIER_THREE = 30.0
+9.  Declare real LOYALTY_DISCOUNT = 5.0
+10. Declare integer MIN_ROOMS_TIER_ONE = 10
+11. Declare integer MIN_ROOMS_TIER_TWO = 20
+12. Declare integer MIN_ROOMS_TIER_THREE = 30
+13. Declare integer MIN_NIGHTS_LOYALTY = 3
+14. Declare real EPSILON = 0.01
+
+15. Declare real nightlyRate
+16. Declare integer roomsBooked
+17. Declare integer nightsStayed
+18. Declare real salesTaxRate
+
+19. Print "Enter nightly rate per room: "
+20. Input nightlyRate
+
+21. Print "Enter number of rooms booked: "
+22. Input roomsBooked
+
+23. Print "Enter number of nights: "
+24. Input nightsStayed
+
+25. Print "Enter sales tax rate as a percentage: "
+26. Input salesTaxRate
+ 
+Part B
+
+27. if nightlyRate > MIN_NIGHTLY_RATE then
+28.       continue
+29. else
+30.       stop program using assert
+31. end if
+
+32. if roomsBooked > MIN_ROOMS then
+33.       continue
+34. else
+35.       stop program using assert
+36. end if
+
+37. if nightsStayed > MIN_NIGHTS then
+38.       continue
+39. else
+40.       stop program using assert
+41. end if
+
+42. if salesTaxRate >= MIN_SALES_TAX_RATE then
+43.       continue
+44. else
+45.       stop program using assert
+46. end if
+
+Part C
+
+47. Show operator precedence table as a comment
+48. Show step by step evaluation of the expression "!(rooms > 0) || (rate >= 50.0 && rooms != nights)"
+
+Part D
+
+49. Declare real roomDiscountPercent
+50. Declare real loyaltyDiscountPercent
+51. Declare real originalSubtotal
+52. Declare real roomDiscountAmount
+53. Declare real subtotalAfterRoomDiscount
+54. Declare real loyaltyDiscountAmount
+55. Declare real subtotalBeforeTax
+56. Declare integer discountTier
+57. Declare real salesTaxAmount
+58. Declare real subtotal
+
+59. if roomsBooked >= MIN_ROOMS_TIER_THREE then
+60.       roomDiscountPercent = DISCOUNT_TIER_THREE
+61.       discountTier = 3
+62. else if roomsBooked >= MIN_ROOMS_TIER_TWO then
+63.       roomDiscountPercent = DISCOUNT_TIER_TWO
+64.       discountTier = 2
+65. else if roomsBooked >= MIN_ROOMS_TIER_ONE then
+66.       roomDiscountPercent = DISCOUNT_TIER_ONE
+67.       discountTier = 1
+68. else
+69.       roomDiscountPercent = NO_DISCOUNT
+70.       discountTier = 0
+71. end if
+
+72. if nightsStayed >= MIN_NIGHTS_LOYALTY AND roomsBooked > MIN_ROOMS then
+73.       loyaltyDiscountPercent = LOYALTY_DISCOUNT
+74. else
+75.       loyaltyDiscountPercent = NO_DISCOUNT
+76. end if
+
+77. originalSubtotal = nightlyRate * roomsBooked * nightsStayed
+78. roomDiscountAmount = originalSubtotal * roomDiscountPercent / 100
+79. subtotalAfterRoomDiscount = originalSubtotal - roomDiscountAmount
+80. loyaltyDiscountAmount = subtotalAfterRoomDiscount * loyaltyDiscountPercent / 100
+81. subtotalBeforeTax = subtotalAfterRoomDiscount - loyaltyDiscountAmount
+82. salesTaxAmount = subtotalBeforeTax * salesTaxRate / 100
+83. subtotal = subtotalBeforeTax + salesTaxAmount
+
+Part E
+
+84. Print blank line
+85. Print "Discount Tier Information"
+
+86. switch discountTier
+87.       case 0
+88.             Print "Tier 0: No room discount"
+89.             Print "Explanation: Fewer than ", MIN_ROOMS_TIER_ONE, " were booked"
+90.       case 1
+91.             Print "Tier 1: 10% room discount"
+92.             Print "Explanation: The customer booked atleast ", MIN_ROOMS_TIER_ONE, " rooms"
+93.       case 2
+94.             Print "Tier 2: 20% room discount"
+95.             Print "Explanation: The customer booked atleast ", MIN_ROOMS_TIER_TWO, " rooms"
+96.       case 3
+97.             Print "Tier 3: 30% room discount"
+98.             Print "Explanation: The customer booked atleast ", MIN_ROOMS_TIER_THREE, " rooms"
+99.       default
+100.            Print "Tier: Unknown discount tier"
+101.            Print "Explanation: Discount Tier could not be determined"
+102. end switch
+
+Part F
+
+103. if nightlyRate < MIN_NIGHTLY_RATE then
+104.       Print "Error: Nightly Rate is below the allowed minimum"
+105. end if
+
+106. if nightsStayed == MIN_NIGHTS then
+107.       Print "Error: Nights stayed must be greater than zero"
+108. end if
+
+109. if roomsBooked <= MIN_ROOMS then
+110.       Print "Error: Rooms booked must be greater than zero"
+111. end if
+
+112. if roomDiscountPercent != NO_DISCOUNT then
+113.       Print "Check: A room discount was applied"
+114. end if
+
+115. if nightlyRate < MIN_NIGHTLY_RATE OR salesTaxRate < MIN_SALES_TAX_RATE then
+116.       Print "Error: One of the money related inputs are invalid"
+117. end if
+
+118. if NOT subtotalBeforeTax >= 0.0 then
+119.       Print "Error: Subtotal is not valid for billing"
+120. end if
+
+Part G
+
+121. if absolute value of (subtotalBeforeTax - NO_DISCOUNT) < EPSILON then
+122.       Print "Floating-Point Check: Subtotal is close to zero"
+123. end if
+
+Part H
+
+124. Format decimal output using fixed and setprecision(2)
+125. Print blank line
+126. Print "HOTEL BILLING RECEIPT" right aligned in width 30
+127. Print blank line
+128. Print "Nightly Rate:" left aligned in width 28, "$", nightlyRate right aligned in width 9
+129. Print "Room Discount Applied:" left aligned in width 28, roomDiscountPercent right aligned in width 9, "%"
+130. Print "Loyalty Discount Applied:" left aligned in width 28, loyaltyDiscountPercent right aligned in width 9, "%"
+131. Print "Number of rooms booked:" left aligned in width 28, roomsBooked right aligned in width 10
+132. Print "Number of nights booked:" left aligned in width 28, nightsStayed right aligned in width 10
+133. Print "---------------------------------------"
+134. Print "Subtotal before Tax:" left aligned in width 28, "$", subtotalBeforeTax right aligned in width 9
+135. Print "Sales Tax Amount:" left aligned in width 28, "$", salesTaxAmount right aligned in width 9
+136. Print "Total Due:" left aligned in width 28, "$", subtotal right aligned in width 9
+137. Print "---------------------------------------"
+
+138. return 0
+*/
 
 
 // ===== Program Start =====
@@ -123,8 +304,7 @@ int main()
     double subtotalAfterRoomDiscount;
     double loyaltyDiscountAmount;
     double subtotalBeforeTax;
-    double totalDiscountPercent;
-    int discounTier;
+    int discountTier;
     double salesTaxAmount;
     double subtotal;
 
@@ -133,22 +313,22 @@ int main()
     if (roomsBooked >= MIN_ROOMS_TIER_THREE)             // Section 6: >= relational operator was used.
     {
         roomDiscountPercent = DISCOUNT_TIER_THREE;
-        discounTier = 3;
+        discountTier = 3;
     }
     else if (roomsBooked >= MIN_ROOMS_TIER_TWO)
     {
         roomDiscountPercent = DISCOUNT_TIER_TWO;
-        discounTier = 2;
+        discountTier = 2;
     }
     else if (roomsBooked >= MIN_ROOMS_TIER_ONE)
     {
         roomDiscountPercent = DISCOUNT_TIER_ONE;
-        discounTier = 1;
+        discountTier = 1;
     }
     else
     {
         roomDiscountPercent = NO_DISCOUNT;
-        discounTier = 0;
+        discountTier = 0;
     }
 
     // checking whether the customer has atleast three nights AND atleast one room booked to apply the 5% discount.
@@ -164,10 +344,10 @@ int main()
     originalSubtotal = nightlyRate * roomsBooked * nightsStayed;
     roomDiscountAmount = originalSubtotal * (roomDiscountPercent / 100);
     subtotalAfterRoomDiscount = originalSubtotal - roomDiscountAmount;
-    loyaltyDiscountAmount = subtotalAfterRoomDiscount * (loyaltyDiscountAmount / 100);
+    loyaltyDiscountAmount = subtotalAfterRoomDiscount * (loyaltyDiscountPercent / 100);
     subtotalBeforeTax = subtotalAfterRoomDiscount - loyaltyDiscountAmount;
     
-    totalDiscountPercent = roomDiscountPercent + loyaltyDiscountPercent;
+
     salesTaxAmount = subtotalBeforeTax * (salesTaxRate / 100);
     subtotal = subtotalBeforeTax + salesTaxAmount;
 
@@ -176,7 +356,7 @@ int main()
     cout << endl;
     cout << "Discount Tier Information" << endl;
 
-    switch (discounTier)
+    switch (discountTier)
     {
     case 0:
         cout << "Tier 0: No room discount" << endl;
@@ -283,6 +463,9 @@ int main()
     cout << "---------------------------------------" << endl;
 
 
+    return 0;
+}
+
     // ===== Section 9 — Known Bug Risks =====
     /*
     1. Dangling else:
@@ -297,6 +480,3 @@ int main()
     Values such as 0 rooms, 0 nights, a negative nightly rate, etc, would make the final bill invalid.
     I prevented this by using assert() checks immediately after reading each input.
     */
-
-    return 0;
-}
