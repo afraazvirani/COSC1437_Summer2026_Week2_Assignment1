@@ -402,6 +402,12 @@ int main()
         cout << "Error: Rooms booked must be greater than zero." << endl;
     }
 
+    if (roomDiscountPercent != NO_DISCOUNT)       // != relational operator was used
+    {
+        cout << "Check: A room discount was applied." << endl;
+    }
+
+
     if (nightlyRate < MIN_NIGHTLY_RATE || salesTaxRate < MIN_SALES_TAX_RATE)      // || operational operator was used
     {
         cout << "Error: One of the money related inputs are invalid." << endl;
